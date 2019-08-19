@@ -1,6 +1,7 @@
 package com.chenghao.product;
 
 import com.chenghao.domain.Person;
+import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.connection.CorrelationData;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,21 +31,21 @@ public class Send  {
             }
         }
     };
-    //感觉没有起作用，在研究研究
-    /*RabbitTemplate.ReturnCallback returnCallback = new RabbitTemplate.ReturnCallback() {
+    //debug启动测试类吧，run启动经常不执行
+    RabbitTemplate.ReturnCallback returnCallback = new RabbitTemplate.ReturnCallback() {
         @Override
         public void returnedMessage(Message message, int replyCode, String replyText, String exchange, String routingkey) {
             System.err.println("Code:" + replyCode + ",Text:" + replyText );
             System.err.println("Exchange:" + exchange + ",RoutingKey:" + routingkey );
         }
-    };*/
+    };
 
     //发送消息
     public void sendMsg(Person person){
         ////CorrelationData对象的作用是作为消息的附加信息传递，我们用它来保存消息的自定义id
         CorrelationData correlationData = new CorrelationData(person.getUsername() + "" + new Date().getTime());
         rabbitTemplate.setConfirmCallback(confirmCallback);
-        //rabbitTemplate.setReturnCallback(returnCallback);
-        rabbitTemplate.convertAndSend("rabbitmq-test","chenghao",person,correlationData);
+        rabbitTemplate.setReturnCallback(returnCallback);
+        rabbitTemplate.convertAndSend("rabbitmq-test","kewenjia",person,correlationData);
     }
 }
