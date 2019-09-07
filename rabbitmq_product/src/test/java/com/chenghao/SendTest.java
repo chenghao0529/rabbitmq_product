@@ -20,6 +20,7 @@ public class SendTest {
 	public void send() throws Exception{
 
 		send.sendMsg(new Person("chenghao",18));
+		TimeUnit.SECONDS.sleep(5);
 	}
 
 }
